@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+char **list = NULL;
+int size = 0;
+int capacity = 0;
+
+
+void initList(int initialCapacity) {
+    capacity = initialCapacity;
+    size = 0;
+    list = (char**)malloc(capacity * sizeof(char*));
+    if (list == NULL) {
+        printf("Error: Failed to allocate memory for list!\n");
+        exit(1);
+    }
+}
+
+void addWord(const char *word) {
+    
+    if (size >= capacity) {
+        capacity *= 2;
+        char **temp = (char**)realloc(list, capacity * sizeof(char*));
+        if (temp == NULL) {
+            printf("Error: Failed to reallocate list!\n");
+            return;
+        }
+        list = temp;
+    }
+
+    size_t len = strlen(word);
+    list[size] = (char*)malloc((len + 1) * sizeof(char));
+    if (list[size] == NULL) {
+        printf("Error: Failed to allocate memory for word!\n");
+        return;
+    }
+
+    strcpy(list[size], word);  
+    size++;
+}
+
+
+int searchWord(const char *word) {
+    for (int i = 0; i < size; i++) {
+        if (strcmp(list[i], word) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+void modifyWord(int index, const char *newWord) {
+    if (index < 0 || index >= size) {
+        printf("Error: Invalid index!\n");
+        return;
+    }
+
+    free(list[index]);                    
+
+    size_t len = strlen(newWord);
+    list[index] = (char*)malloc((len + 1) * sizeof(char));
+    if (list[index] == NULL) {
+        printf("Error: Memory allocation failed!\n");
+        return;
+    }
+
+    strcpy(list[index], newWord);         
+}
+
+
+void deleteWord(int index) {
+    if (index < 0 || index >= size) {
+        printf("Error: Invalid index!\n");
+        return;
+    }
+
+    free(list[index]);                   
+
+    
+    for (int i = index; i < size - 1; i++) {
+        list[i] = list[i + 1];
+    }
+
+    size--;
+}
+
+void printList() {
+    printf("Current list (%d words):\n", size);
+    for (int i = 0; i < size; i++) {
+        printf("[%d] %s\n", i, list[i]);
+    }
+    printf("\n");
+}
+
+
+void freeList() {
+    for (int i = 0; i < size; i++) {
+        free(list[i]);
+    }
+    free(list);
+    list = NULL;
+    size = 0;
+    capacity = 0;
+}
+
+int main() {
+	
+    printf("SIMPLE C CHAR DICTIONARY\n\n");
+
+
+    initList(5);
+
+    addWord("alpha");
+    addWord("bravo");
+    addWord("charlie");
+    addWord("delta");
+    addWord("echo");
+    
+    printList();
+
+
+    printf("Search for a word delta:\n");
+    int idx = searchWord("delta");
+    if (idx != -1) {
+        printf("delta found at index %d\n\n", idx);
+    } else {
+        printf("delta not found\n\n");
+    }
+
+    printf("Modify the word at index 1 from bravo to blueberry\n");
+    modifyWord(1, "blueberry");
+    printList();
+
+
+    printf(" Delete the word charlie\n");
+    int charlieIdx = searchWord("charlie");
+    if (charlieIdx != -1) {
+        deleteWord(charlieIdx);
+        printf("charlie deleted successfully (was at index %d)\n\n", charlieIdx);
+    } else {
+        printf("charlie not found\n\n");
+    }
+    printList();
+    
+    printf("Freeing all dynamically allocated memory...\n");
+    freeList();
+
+    printf("Task completed. All memory freed.\n");
+
+    return 0;
+}
