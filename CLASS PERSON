@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+typedef struct {
+    char name[100];
+    int studentID;
+    int age;
+} Person;
+
+
+void init(Person *self, const char *name, int id, int age) {
+
+    if (name != NULL) {
+        strcpy(self->name, name);
+    }
+    self->studentID = id;
+    self->age = age;
+}
+
+
+
+void printStudentInfo(Person *self) {
+    
+    printf("Name: %s\n", self->name);
+    printf("Student ID: %d\n", self->studentID);
+    printf("Age: %d\n", self->age);
+    printf("%\n","%\n");
+    
+}
+
+
+int getID(Person *self) {
+    
+    return self->studentID;
+}
+
+
+int getAge(Person *self) {
+    
+    return self->age;
+}
+
+
+const char* getName(Person *self) {
+	
+    return self->name;
+}
+
+
+void personSwap(Person *p1, Person *p2) {
+    
+    Person temp;
+    
+    temp = *p1;
+    
+    *p1 = *p2;
+    
+    *p2 = temp;
+}
+
+int main() {
+
+    Person s1, s2;
+
+
+    init(&s1, "WINSTONE", 2420037, 21);
+    init(&s2, "DRAKE", 2420035, 39);
+
+    printf("...BEFORE SWAP...\n");
+    printStudentInfo(&s1);
+    printStudentInfo(&s2);
+    
+
+    
+    personSwap(&s1, &s2);
+
+    printf(" ...AFTER SWAP...\n");
+    printStudentInfo(&s1);
+    printStudentInfo(&s2);
+
+    return 0;
+}
